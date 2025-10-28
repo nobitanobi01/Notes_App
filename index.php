@@ -23,6 +23,7 @@ if ($result->num_rows > 0) {
     <title>Notes-App</title>
     <script src="https://kit.fontawesome.com/35821647e0.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="stylesheet1.css">
+    <link rel="icon" type="image/x-icon" href="favicon.png">
 </head>
 
 <body>
