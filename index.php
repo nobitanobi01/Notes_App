@@ -29,10 +29,12 @@ if ($result->num_rows > 0) {
 
 <body>
     <section class="container">
+        <!-- Sidebar -->
         <div class="sidebar" id="sidebar">
             <div class="sidebar-nav">
                 <h2>Saved Notes</h2>
-                <i class="fa-solid fa-pen-to-square" onclick="createNote()"></i>
+                <!-- Create Note Icon -->
+                <i class="fa-solid fa-pen-to-square" onclick="createNote()" style="cursor:pointer;"></i>
             </div>
 
             <div class="sidebar-list">
@@ -49,7 +51,7 @@ if ($result->num_rows > 0) {
                         $last_updated = $single["last_updated"];
                         ?>
 
-                        <div class="note-item" 
+                        <div class="note-item"
                             data-id="<?php echo $note_id ?>"
                             data-title="<?php echo htmlspecialchars($title, ENT_QUOTES) ?>"
                             data-subtitle="<?php echo htmlspecialchars($subtitle, ENT_QUOTES) ?>"
@@ -69,6 +71,7 @@ if ($result->num_rows > 0) {
             </div>
         </div>
 
+        <!-- Main Container -->
         <div class="main-container" id="main-container">
             <div class="main-container-nav">
                 <h2>Notes</h2>
@@ -76,7 +79,7 @@ if ($result->num_rows > 0) {
             </div>
 
             <!-- Create Note Section -->
-            <div class="main-container-content" id="create">
+            <div class="main-container-content" id="create" style="display:none;">
                 <div class="view-note">
                     <div class="content">
                         <form action="insertRecord.php" method="post" enctype="multipart/form-data">
@@ -99,7 +102,7 @@ if ($result->num_rows > 0) {
             </div>
 
             <!-- View Note Section -->
-            <div class="main-container-content view" id="view">
+            <div class="main-container-content view" id="view" style="display:none;">
                 <div class="view-note">
                     <div class="icons">
                         <i class="fa-solid fa-pen edit" onclick="updateNote()" style="color:green; cursor:pointer;"></i>
@@ -122,7 +125,7 @@ if ($result->num_rows > 0) {
             </div>
 
             <!-- Update Note Section -->
-            <div class="main-container-content update" id="update">
+            <div class="main-container-content update" id="update" style="display:none;">
                 <div class="view-note">
                     <div class="content">
                         <form action="updateRecord.php" method="post">
@@ -147,13 +150,19 @@ if ($result->num_rows > 0) {
     </section>
 
 <script>
+    // ✅ Function to open the create note section
+    function createNote() {
+        document.getElementById("view").style.display = "none";
+        document.getElementById("update").style.display = "none";
+        document.getElementById("create").style.display = "block";
+    }
+
+    // ✅ Function to open update form with existing note data
     function updateNote() {
         let allNotesRecords = <?php echo json_encode($allNotes) ?>;
-
         document.getElementById("view").style.display = "none";
         document.getElementById("create").style.display = "none";
         document.getElementById("update").style.display = "block";
-
         let noteId = document.getElementById("findNote").value;
 
         allNotesRecords.forEach(element => {
@@ -168,15 +177,19 @@ if ($result->num_rows > 0) {
         });
     }
 
+    // ✅ Sidebar and note selection behavior
     document.addEventListener("DOMContentLoaded", function () {
         const toggleBtn = document.getElementById("toggleSidebarBtn");
         const sidebar = document.getElementById("sidebar");
-        const mainContainer = document.getElementById("main-container");
 
         toggleBtn.addEventListener("click", function () {
             sidebar.classList.toggle("hide");
         });
 
+        // Show "Create Note" by default on page load
+        createNote();
+
+        // Handle click on existing notes
         document.querySelectorAll(".note-item").forEach(item => {
             item.addEventListener("click", () => {
                 const title = item.getAttribute("data-title");
@@ -197,7 +210,7 @@ if ($result->num_rows > 0) {
                 document.getElementById("note_desc").style.fontSize = fontSize + "px";
                 document.getElementById("lastUpdated").innerText = "Last updated: " + lastUpdated;
                 document.getElementById("findNote").value = noteId;
-                document.getElementById("del_id").value = noteId; // ✅ Set delete ID here
+                document.getElementById("del_id").value = noteId;
 
                 const viewImage = document.getElementById("viewImage");
                 if (image) {
