@@ -25,6 +25,33 @@ if ($result->num_rows > 0) {
     <script src="https://kit.fontawesome.com/35821647e0.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="stylesheet1.css">
     <link rel="icon" type="image/x-icon" href="favicon.png">
+
+    <style>
+        /* ✅ Mobile-friendly Create button */
+        .icon-btn {
+            background: none;
+            border: none;
+            padding: 0px;
+            margin-left: 5px;
+            margin-top: -5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+            z-index: 50;
+            position: relative;
+            color: white;
+        }
+        .icon-btn, .icon-btn i {
+            pointer-events: auto;
+        }
+        @media (max-width: 768px) {
+            .icon-btn i {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -33,8 +60,10 @@ if ($result->num_rows > 0) {
         <div class="sidebar" id="sidebar">
             <div class="sidebar-nav">
                 <h2>Saved Notes</h2>
-                <!-- Create Note Icon -->
-                <i class="fa-solid fa-pen-to-square" onclick="createNote()" style="cursor:pointer;"></i>
+                <!-- ✅ Mobile-friendly Create Note Icon -->
+                <button id="createBtn" class="icon-btn" aria-label="Create note" title="Create note">
+                    <i class="fa-solid fa-pen-to-square" aria-hidden="true"></i>
+                </button>
             </div>
 
             <div class="sidebar-list">
@@ -155,6 +184,12 @@ if ($result->num_rows > 0) {
         document.getElementById("view").style.display = "none";
         document.getElementById("update").style.display = "none";
         document.getElementById("create").style.display = "block";
+
+        // On mobile — hide sidebar automatically after clicking create
+        const sidebar = document.getElementById("sidebar");
+        if (window.innerWidth <= 768) {
+            sidebar.classList.add("hide");
+        }
     }
 
     // ✅ Function to open update form with existing note data
@@ -177,17 +212,24 @@ if ($result->num_rows > 0) {
         });
     }
 
-    // ✅ Sidebar and note selection behavior
+    // ✅ Sidebar toggle + note handling
     document.addEventListener("DOMContentLoaded", function () {
         const toggleBtn = document.getElementById("toggleSidebarBtn");
         const sidebar = document.getElementById("sidebar");
 
+        // Sidebar toggle (mobile friendly)
         toggleBtn.addEventListener("click", function () {
             sidebar.classList.toggle("hide");
         });
 
-        // Show "Create Note" by default on page load
+        // Show Create Note by default
         createNote();
+
+        // Reattach click listener for Create Note icon (mobile fix)
+        const createIcon = document.querySelector(".fa-pen-to-square");
+        if (createIcon) {
+            createIcon.addEventListener("click", createNote);
+        }
 
         // Handle click on existing notes
         document.querySelectorAll(".note-item").forEach(item => {
@@ -220,6 +262,7 @@ if ($result->num_rows > 0) {
                     viewImage.style.display = "none";
                 }
 
+                // On mobile — auto close sidebar
                 if (window.innerWidth <= 768) {
                     sidebar.classList.add("hide");
                 }
@@ -227,6 +270,7 @@ if ($result->num_rows > 0) {
         });
     });
 </script>
+
 
 </body>
 </html>
