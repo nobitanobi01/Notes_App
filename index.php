@@ -38,14 +38,17 @@ if ($result->num_rows > 0) {
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
             z-index: 50;
             position: relative;
             color: white;
         }
-        .icon-btn, .icon-btn i {
+
+        .icon-btn,
+        .icon-btn i {
             pointer-events: auto;
         }
+
         @media (max-width: 768px) {
             .icon-btn i {
                 font-size: 20px;
@@ -80,13 +83,11 @@ if ($result->num_rows > 0) {
                         $last_updated = $single["last_updated"];
                         ?>
 
-                        <div class="note-item"
-                            data-id="<?php echo $note_id ?>"
+                        <div class="note-item" data-id="<?php echo $note_id ?>"
                             data-title="<?php echo htmlspecialchars($title, ENT_QUOTES) ?>"
                             data-subtitle="<?php echo htmlspecialchars($subtitle, ENT_QUOTES) ?>"
                             data-desc="<?php echo htmlspecialchars($desc, ENT_QUOTES) ?>"
-                            data-fontsize="<?php echo $fontsize ?>"
-                            data-image="<?php echo $image ?>"
+                            data-fontsize="<?php echo $fontsize ?>" data-image="<?php echo $image ?>"
                             data-last-updated="<?php echo $last_updated ?>">
                             <?php echo $index++ . '. ' . $title ?>
                         </div>
@@ -116,10 +117,12 @@ if ($result->num_rows > 0) {
                             <input type="text" name="subtitle" placeholder="Enter Subtitle"><br>
 
                             <div class="values">
-                                <textarea name="desc" id="desc" rows="10" placeholder="Write Your note here" required></textarea>
+                                <textarea name="desc" id="desc" rows="10" placeholder="Write Your note here"
+                                    required></textarea>
                                 <select name="fontsize" id="font" onchange="changeSize()">
                                     <option value="18">Select Font Size</option>
-                                    <?php for ($i = 8; $i <= 18; $i++) echo "<option value='$i'>$i</option>"; ?>
+                                    <?php for ($i = 8; $i <= 18; $i++)
+                                        echo "<option value='$i'>$i</option>"; ?>
                                 </select>
                             </div>
                             <input type="file" name="image" id="image">
@@ -163,10 +166,12 @@ if ($result->num_rows > 0) {
                             <input type="text" name="subtitle" id="update_subtitle" placeholder="Enter Subtitle"><br>
 
                             <div class="values">
-                                <textarea name="desc" id="update_desc" rows="10" placeholder="Write Your note here" required></textarea>
+                                <textarea name="desc" id="update_desc" rows="10" placeholder="Write Your note here"
+                                    required></textarea>
                                 <select name="fontsize" id="update_font" required onchange="changeSizeU()">
                                     <option value="18">Select Font Size</option>
-                                    <?php for ($i = 8; $i <= 18; $i++) echo "<option value='$i'>$i</option>"; ?>
+                                    <?php for ($i = 8; $i <= 18; $i++)
+                                        echo "<option value='$i'>$i</option>"; ?>
                                 </select>
                             </div>
 
@@ -178,99 +183,110 @@ if ($result->num_rows > 0) {
         </div>
     </section>
 
-<script>
-    // ✅ Function to open the create note section
-    function createNote() {
-        document.getElementById("view").style.display = "none";
-        document.getElementById("update").style.display = "none";
-        document.getElementById("create").style.display = "block";
+    <script>
+        // ✅ Function to open the create note section
+        function createNote() {
+            document.getElementById("view").style.display = "none";
+            document.getElementById("update").style.display = "none";
+            document.getElementById("create").style.display = "block";
 
-        // On mobile — hide sidebar automatically after clicking create
-        const sidebar = document.getElementById("sidebar");
-        if (window.innerWidth <= 768) {
-            sidebar.classList.add("hide");
-        }
-    }
-
-    // ✅ Function to open update form with existing note data
-    function updateNote() {
-        let allNotesRecords = <?php echo json_encode($allNotes) ?>;
-        document.getElementById("view").style.display = "none";
-        document.getElementById("create").style.display = "none";
-        document.getElementById("update").style.display = "block";
-        let noteId = document.getElementById("findNote").value;
-
-        allNotesRecords.forEach(element => {
-            if (element["note_unique_id"] == noteId) {
-                document.getElementById("n_id").value = element["note_unique_id"];
-                document.getElementById("update_title").value = element["note_title"];
-                document.getElementById("update_subtitle").value = element["note_subtitle"];
-                let note = document.getElementById("update_desc");
-                note.style.fontSize = element["note_desc_fontsize"] + "px";
-                note.innerHTML = element["note_desc"];
+            // On mobile — hide sidebar automatically after clicking create
+            const sidebar = document.getElementById("sidebar");
+            if (window.innerWidth <= 768) {
+                sidebar.classList.add("hide");
             }
-        });
-    }
-
-    // ✅ Sidebar toggle + note handling
-    document.addEventListener("DOMContentLoaded", function () {
-        const toggleBtn = document.getElementById("toggleSidebarBtn");
-        const sidebar = document.getElementById("sidebar");
-
-        // Sidebar toggle (mobile friendly)
-        toggleBtn.addEventListener("click", function () {
-            sidebar.classList.toggle("hide");
-        });
-
-        // Show Create Note by default
-        createNote();
-
-        // Reattach click listener for Create Note icon (mobile fix)
-        const createIcon = document.querySelector(".fa-pen-to-square");
-        if (createIcon) {
-            createIcon.addEventListener("click", createNote);
         }
 
-        // Handle click on existing notes
-        document.querySelectorAll(".note-item").forEach(item => {
-            item.addEventListener("click", () => {
-                const title = item.getAttribute("data-title");
-                const subtitle = item.getAttribute("data-subtitle");
-                const desc = item.getAttribute("data-desc");
-                const fontSize = item.getAttribute("data-fontsize");
-                const image = item.getAttribute("data-image");
-                const lastUpdated = new Date(item.getAttribute("data-last-updated")).toLocaleString();
-                const noteId = item.getAttribute("data-id");
+        // ✅ Function to open update form with existing note data
+        function updateNote() {
+            let allNotesRecords = <?php echo json_encode($allNotes) ?>;
+            document.getElementById("view").style.display = "none";
+            document.getElementById("create").style.display = "none";
+            document.getElementById("update").style.display = "block";
+            let noteId = document.getElementById("findNote").value;
 
-                document.getElementById("view").style.display = "block";
-                document.getElementById("create").style.display = "none";
-                document.getElementById("update").style.display = "none";
-
-                document.getElementById("title").innerText = title;
-                document.getElementById("subtitle").innerText = subtitle;
-                document.getElementById("note_desc").innerText = desc;
-                document.getElementById("note_desc").style.fontSize = fontSize + "px";
-                document.getElementById("lastUpdated").innerText = "Last updated: " + lastUpdated;
-                document.getElementById("findNote").value = noteId;
-                document.getElementById("del_id").value = noteId;
-
-                const viewImage = document.getElementById("viewImage");
-                if (image) {
-                    viewImage.src = image;
-                    viewImage.style.display = "block";
-                } else {
-                    viewImage.style.display = "none";
-                }
-
-                // On mobile — auto close sidebar
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.add("hide");
+            allNotesRecords.forEach(element => {
+                if (element["note_unique_id"] == noteId) {
+                    document.getElementById("n_id").value = element["note_unique_id"];
+                    document.getElementById("update_title").value = element["note_title"];
+                    document.getElementById("update_subtitle").value = element["note_subtitle"];
+                    let note = document.getElementById("update_desc");
+                    note.style.fontSize = element["note_desc_fontsize"] + "px";
+                    note.innerHTML = element["note_desc"];
                 }
             });
+        }
+
+        // ✅ Sidebar toggle + note handling
+        document.addEventListener("DOMContentLoaded", function () {
+            const toggleBtn = document.getElementById("toggleSidebarBtn");
+            const sidebar = document.getElementById("sidebar");
+
+            // Sidebar toggle (mobile friendly)
+            toggleBtn.addEventListener("click", function () {
+                sidebar.classList.toggle("hide");
+            });
+
+            // ✅ Show Create Note (Desktop) or Sidebar (Mobile) by default
+            if (window.innerWidth > 768) {
+                // Desktop → show Create Note form
+                createNote();
+            } else {
+                // Mobile → show Sidebar (Saved Notes)
+                sidebar.classList.remove("hide");
+                document.getElementById("create").style.display = "none";
+                document.getElementById("view").style.display = "none";
+                document.getElementById("update").style.display = "none";
+            }
+
+            // Reattach click listener for Create Note icon (mobile fix)
+            const createIcon = document.querySelector(".fa-pen-to-square");
+            if (createIcon) {
+                createIcon.addEventListener("click", createNote);
+            }
+
+            // Handle click on existing notes
+            document.querySelectorAll(".note-item").forEach(item => {
+                item.addEventListener("click", () => {
+                    const title = item.getAttribute("data-title");
+                    const subtitle = item.getAttribute("data-subtitle");
+                    const desc = item.getAttribute("data-desc");
+                    const fontSize = item.getAttribute("data-fontsize");
+                    const image = item.getAttribute("data-image");
+                    const lastUpdated = new Date(item.getAttribute("data-last-updated")).toLocaleString();
+                    const noteId = item.getAttribute("data-id");
+
+                    document.getElementById("view").style.display = "block";
+                    document.getElementById("create").style.display = "none";
+                    document.getElementById("update").style.display = "none";
+
+                    document.getElementById("title").innerText = title;
+                    document.getElementById("subtitle").innerText = subtitle;
+                    document.getElementById("note_desc").innerText = desc;
+                    document.getElementById("note_desc").style.fontSize = fontSize + "px";
+                    document.getElementById("lastUpdated").innerText = "Last updated: " + lastUpdated;
+                    document.getElementById("findNote").value = noteId;
+                    document.getElementById("del_id").value = noteId;
+
+                    const viewImage = document.getElementById("viewImage");
+                    if (image) {
+                        viewImage.src = image;
+                        viewImage.style.display = "block";
+                    } else {
+                        viewImage.style.display = "none";
+                    }
+
+                    // On mobile — auto close sidebar
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.add("hide");
+                    }
+                });
+            });
         });
-    });
-</script>
+    </script>
+
 
 
 </body>
+
 </html>
