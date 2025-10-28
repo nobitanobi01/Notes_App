@@ -1,5 +1,7 @@
 <?php
 include "db.php";
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 $stmt = $conn->prepare("SELECT * FROM notes");
 $stmt->execute();
@@ -11,7 +13,6 @@ if ($result->num_rows > 0) {
         $allNotes[] = $row;
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -46,14 +47,15 @@ if ($result->num_rows > 0) {
                         $fontsize = $single["note_desc_fontsize"];
                         $image = $single["note_image"];
                         $last_updated = $single["last_updated"];
-
                         ?>
 
-                        <div class="note-item" data-id="<?php echo $note_id ?>"
+                        <div class="note-item" 
+                            data-id="<?php echo $note_id ?>"
                             data-title="<?php echo htmlspecialchars($title, ENT_QUOTES) ?>"
                             data-subtitle="<?php echo htmlspecialchars($subtitle, ENT_QUOTES) ?>"
                             data-desc="<?php echo htmlspecialchars($desc, ENT_QUOTES) ?>"
-                            data-fontsize="<?php echo $fontsize ?>" data-image="<?php echo $image ?>"
+                            data-fontsize="<?php echo $fontsize ?>"
+                            data-image="<?php echo $image ?>"
                             data-last-updated="<?php echo $last_updated ?>">
                             <?php echo $index++ . '. ' . $title ?>
                         </div>
@@ -61,9 +63,7 @@ if ($result->num_rows > 0) {
                         <?php
                     }
                 } else {
-
-                    echo " No Notes Yet!!!!";
-
+                    echo "No Notes Yet!!!!";
                 }
                 ?>
             </div>
@@ -72,37 +72,25 @@ if ($result->num_rows > 0) {
         <div class="main-container" id="main-container">
             <div class="main-container-nav">
                 <h2>Notes</h2>
-                <i class="fa-solid fa-bars" id="toggleSidebarBtn" style="cursor: pointer; "></i>
+                <i class="fa-solid fa-bars" id="toggleSidebarBtn" style="cursor: pointer;"></i>
             </div>
+
+            <!-- Create Note Section -->
             <div class="main-container-content" id="create">
                 <div class="view-note">
                     <div class="content">
                         <form action="insertRecord.php" method="post" enctype="multipart/form-data">
-                            <input type="text" name="title" placeholder="Enter Title" required
-                                style="font-family: 'Comic Relief', system-ui; "><br>
-                            <input type="text" name="subtitle" placeholder="Enter Subtitle" style="  
-                                  font-family: 'Comic Relief', system-ui;"><br>
+                            <input type="text" name="title" placeholder="Enter Title" required><br>
+                            <input type="text" name="subtitle" placeholder="Enter Subtitle"><br>
 
                             <div class="values">
-                                <textarea name="desc" id="desc" rows="10" placeholder="Write Your note here" required
-                                    style="font-family: 'Comic Relief', system-ui; "></textarea>
-                                <select name="fontsize" id="font" onchange="changeSize()"
-                                    style="font-family: 'Comic Relief', system-ui; ">
+                                <textarea name="desc" id="desc" rows="10" placeholder="Write Your note here" required></textarea>
+                                <select name="fontsize" id="font" onchange="changeSize()">
                                     <option value="18">Select Font Size</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                    <option value="13">13</option>
-                                    <option value="14">14</option>
-                                    <option value="15">15</option>
-                                    <option value="16">16</option>
-                                    <option value="17">17</option>
-                                    <option value="18">18</option>
+                                    <?php for ($i = 8; $i <= 18; $i++) echo "<option value='$i'>$i</option>"; ?>
                                 </select>
                             </div>
-                            <input type="file" name="image" id="image" style="font-family: 'Comic Relief', system-ui; ">
+                            <input type="file" name="image" id="image">
                             <br>
                             <button type="submit">Save</button>
                         </form>
@@ -110,15 +98,16 @@ if ($result->num_rows > 0) {
                 </div>
             </div>
 
+            <!-- View Note Section -->
             <div class="main-container-content view" id="view">
                 <div class="view-note">
                     <div class="icons">
-                        <form>
-                            <i class="fa-solid fa-pen edit" onclick="updateNote()" style="color:green"></i>
-                        </form>
-                        <form action="deleteRecord.php" method="post">
+                        <i class="fa-solid fa-pen edit" onclick="updateNote()" style="color:green; cursor:pointer;"></i>
+                        <form action="deleteRecord.php" method="post" style="display:inline;">
                             <input type="text" id="del_id" name="note_id" hidden>
-                            <button id="del-btn"><i class="fa-solid fa-trash" style="color:red"></i></button>
+                            <button id="del-btn" style="border:none; background:none; cursor:pointer;">
+                                <i class="fa-solid fa-trash" style="color:red;"></i>
+                            </button>
                         </form>
                     </div>
                     <div class="content">
@@ -126,45 +115,30 @@ if ($result->num_rows > 0) {
                         <h3 id="subtitle"></h3>
                         <p id="note_desc"></p>
                         <input type="text" id="findNote" hidden><br>
-                        <img src="" alt="" id="viewImage">
-
-                        <!-- Add Date and Time of Last Update -->
+                        <img src="" alt="" id="viewImage" style="display:none;">
                         <p id="lastUpdated" style="font-style: italic; color: gray;"></p>
                     </div>
                 </div>
             </div>
 
+            <!-- Update Note Section -->
             <div class="main-container-content update" id="update">
                 <div class="view-note">
                     <div class="content">
                         <form action="updateRecord.php" method="post">
-                            <input type="text" id="n_id" name="n_id" hidden
-                                style="font-family: 'Comic Relief', system-ui; ">
-                            <input type="text" name="title" id="update_title" placeholder="Enter Title" required
-                                style="font-family: 'Comic Relief', system-ui; "><br>
-                            <input type="text" name="subtitle" id="update_subtitle" placeholder="Enter Subtitle"
-                                style="font-family: 'Comic Relief', system-ui; "><br>
+                            <input type="text" id="n_id" name="n_id" hidden>
+                            <input type="text" name="title" id="update_title" placeholder="Enter Title" required><br>
+                            <input type="text" name="subtitle" id="update_subtitle" placeholder="Enter Subtitle"><br>
 
                             <div class="values">
-                                <textarea name="desc" id="update_desc" rows="10" placeholder="Write Your note here"
-                                    required style="font-family: 'Comic Relief', system-ui; "></textarea>
-                                <select name="fontsize" id="update_font" required onchange="changeSizeU()" style="font-family: 'Comic Relief', system-ui; ">
+                                <textarea name="desc" id="update_desc" rows="10" placeholder="Write Your note here" required></textarea>
+                                <select name="fontsize" id="update_font" required onchange="changeSizeU()">
                                     <option value="18">Select Font Size</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                    <option value="13">13</option>
-                                    <option value="14">14</option>
-                                    <option value="15">15</option>
-                                    <option value="16">16</option>
-                                    <option value="17">17</option>
-                                    <option value="18">18</option>
+                                    <?php for ($i = 8; $i <= 18; $i++) echo "<option value='$i'>$i</option>"; ?>
                                 </select>
                             </div>
 
-                            <button type="submit" style="font-family: 'Comic Relief', system-ui; ">Update</button>
+                            <button type="submit">Update</button>
                         </form>
                     </div>
                 </div>
@@ -172,10 +146,7 @@ if ($result->num_rows > 0) {
         </div>
     </section>
 
-</body>
-<script src="script.js"></script>
 <script>
-
     function updateNote() {
         let allNotesRecords = <?php echo json_encode($allNotes) ?>;
 
@@ -183,15 +154,13 @@ if ($result->num_rows > 0) {
         document.getElementById("create").style.display = "none";
         document.getElementById("update").style.display = "block";
 
-        let a = document.getElementById("findNote").value;
+        let noteId = document.getElementById("findNote").value;
 
         allNotesRecords.forEach(element => {
-            if (element["note_unique_id"] == a) {
-
+            if (element["note_unique_id"] == noteId) {
                 document.getElementById("n_id").value = element["note_unique_id"];
                 document.getElementById("update_title").value = element["note_title"];
                 document.getElementById("update_subtitle").value = element["note_subtitle"];
-
                 let note = document.getElementById("update_desc");
                 note.style.fontSize = element["note_desc_fontsize"] + "px";
                 note.innerHTML = element["note_desc"];
@@ -199,53 +168,17 @@ if ($result->num_rows > 0) {
         });
     }
 
-    // Display last updated date and time in the view mode
-    document.querySelectorAll('.note-item').forEach(item => {
-        item.addEventListener('click', () => {
-            const lastUpdated = item.getAttribute('data-last-updated');
-            const formattedDate = new Date(lastUpdated).toLocaleString(); // Format it to a readable format
-
-            document.getElementById('lastUpdated').innerText = 'Last updated: ' + formattedDate;
-        });
-    });
     document.addEventListener("DOMContentLoaded", function () {
         const toggleBtn = document.getElementById("toggleSidebarBtn");
         const sidebar = document.getElementById("sidebar");
         const mainContainer = document.getElementById("main-container");
 
-        let sidebarVisible = true;
-
-        toggleBtn.addEventListener("click", function () {
-            sidebarVisible = !sidebarVisible;
-
-            if (sidebarVisible) {
-                sidebar.style.display = "block";
-                mainContainer.style.width = "81%"; // or whatever you use
-            } else {
-                sidebar.style.display = "none";
-                mainContainer.style.width = "100%";
-            }
-        });
-    });
-    document.addEventListener("DOMContentLoaded", function () {
-        const toggleBtn = document.getElementById("toggleSidebarBtn");
-        const sidebar = document.getElementById("sidebar");
-        const mainContainer = document.getElementById("main-container");
-
-        // Handle menu toggle (≡)
         toggleBtn.addEventListener("click", function () {
             sidebar.classList.toggle("hide");
         });
 
-        // When a note is clicked, show its content and hide sidebar on mobile
         document.querySelectorAll(".note-item").forEach(item => {
             item.addEventListener("click", () => {
-                // ✅ Hide sidebar on mobile
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.add("hide");
-                }
-
-                // ✅ Show the note content
                 const title = item.getAttribute("data-title");
                 const subtitle = item.getAttribute("data-subtitle");
                 const desc = item.getAttribute("data-desc");
@@ -264,6 +197,7 @@ if ($result->num_rows > 0) {
                 document.getElementById("note_desc").style.fontSize = fontSize + "px";
                 document.getElementById("lastUpdated").innerText = "Last updated: " + lastUpdated;
                 document.getElementById("findNote").value = noteId;
+                document.getElementById("del_id").value = noteId; // ✅ Set delete ID here
 
                 const viewImage = document.getElementById("viewImage");
                 if (image) {
@@ -272,11 +206,14 @@ if ($result->num_rows > 0) {
                 } else {
                     viewImage.style.display = "none";
                 }
+
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.add("hide");
+                }
             });
         });
     });
-
-
 </script>
 
+</body>
 </html>
