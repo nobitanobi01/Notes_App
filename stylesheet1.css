@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Comic+Relief:wght@400;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Comic Relief", system-ui;
+    background-color: #f9f9f9;
+}
+
+/* Container Layout */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background-color: #222;
+    color: white;
+    padding: 20px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease-in-out;
+}
+
+
+.sidebar-nav {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.sidebar-nav i {
+    cursor: pointer;
+    font-size: 20px;
+    margin-top: 8px;
+}
+
+.sidebar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    overflow-y: auto;
+    max-height: 80vh;
+}
+
+.note-item {
+    padding: 10px;
+    background-color: #333;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.note-item:hover {
+    background-color: #444;
+}
+
+/* Main Container */
+.main-container {
+    flex: 1;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.main-container-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.main-container-nav h2 {
+    font-size: 30px;
+    color: #007bff;
+}
+
+.main-container-nav i {
+    font-size: 20px;
+}
+
+.navigation i {
+    font-size: 1.5rem;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+
+.main-container-content#create {
+    display: block;
+}
+
+.main-container-content.view,
+.main-container-content.update {
+    display: none;
+}
+
+#view .content h1,
+#view .content h3,
+#view .content p#note_desc {
+    margin-bottom: 15px;
+}
+
+.view-note .icons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.view-note .icons i,
+.view-note .icons button {
+    cursor: pointer;
+    font-size: 1.2rem;
+    background: none;
+    border: none;
+    color: #444;
+}
+
+.view-note .content input,
+.view-note .content textarea,
+.view-note .content select,
+.view-note .content button {
+    width: 100%;
+    padding: 8px;
+    margin: 6px 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.view-note .content button {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.view-note .content button:hover {
+    background-color: #0056b3;
+}
+
+#viewImage {
+    max-width: 100%;
+    margin-top: 10px;
+    display: block;
+}
+
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: black;
+        height: 100%;
+        z-index: 1000;
+        display: block;
+    }
+
+    .sidebar.hide {
+        display: none;
+    }
+
+    .main-container {
+        width: 100%;
+    }
+}
